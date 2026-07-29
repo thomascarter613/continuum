@@ -8,691 +8,843 @@
 
 ## 1. Purpose
 
-The Continuum Knowledge Model defines how a project represents propositions, statements, decisions, evidence, uncertainty, and authority.
+The Continuum Knowledge Model defines how project information becomes structured knowledge and how knowledge relates to other project knowledge.
 
-Its purpose is to ensure that project knowledge can be distinguished from:
+The model distinguishes:
 
-* conversations
-* artifacts
 * observations
-* proposals
-* decisions
-* evidence
-* assumptions
+* assertions
 * interpretations
+* propositions
+* claims
+* evidence
+* decisions
+* relationships
+* epistemic states
+* semantic equivalence
+* entailment
+* contradiction
+* compatibility
+* derivation
+* dependency
 
-The model is intentionally conceptual at this stage.
-
-No storage schema is implied.
+The model is conceptual and does not prescribe storage technology.
 
 ---
 
-# 2. Fundamental Principle
+# 2. Information vs Knowledge
 
-Continuum treats project understanding as a network of claims and relationships rather than a collection of documents.
+Continuum distinguishes raw information from interpreted project knowledge.
 
-The fundamental knowledge primitive is the **Claim**.
-
-A Claim represents a proposition about the project.
-
-Examples:
+Conceptually:
 
 ```text
-"The application uses SQLite."
-
-"The editor must support Markdown."
-
-"The persistence layer should remain local-first."
-
-"Authentication is currently incomplete."
+Information
+    ↓
+Observation
+    ↓
+Interpretation
+    ↓
+Claim / Knowledge
 ```
 
-A Claim does not inherently imply that the proposition is true.
-
-Its truth status must be established through evidence, authority, reasoning, observation, or explicit project decisions.
+The transformation between stages must remain traceable.
 
 ---
 
-# 3. Claim
+# 3. Observation
 
-A Claim represents a proposition that may be:
+An Observation represents something directly encountered or measured.
 
-* observed
-* inferred
-* assumed
-* proposed
-* accepted
-* disputed
-* contradicted
-* rejected
-* superseded
-* unknown
+Examples include:
 
-A Claim should eventually support:
+```text
+A source file exists.
+A test exited with status 1.
+A package.json contains a dependency.
+A Git commit changed a file.
+An API returned HTTP 500.
+```
 
-* identity
-* subject
-* predicate
-* object or value
-* provenance
-* temporal validity
-* epistemic status
-* confidence
-* authority
-* supporting evidence
-* contradicting evidence
-* relationships to other claims
+Observations should be attributable to a Source and Actor where possible.
 
 ---
 
 # 4. Assertion
 
-An Assertion is a particular expression, observation, or statement concerning a Claim.
+An Assertion is a statement made by an Actor.
 
-The distinction is:
+Examples:
 
 ```text
-Claim:
-    The project uses SQLite.
+Developer:
+    "We will use PostgreSQL."
 
-Assertion:
-    src/database/config.ts references SQLite
-    observed on 2026-07-29.
+AI:
+    "The authentication layer appears to use JWT."
+
+Documentation:
+    "Production requires Redis."
 ```
 
-A Claim represents the proposition.
+An Assertion is not automatically true.
 
-An Assertion represents a specific statement or observation about that proposition.
-
-This allows Continuum to preserve multiple statements concerning the same proposition without collapsing them into one record.
+```text
+Assertion ≠ Fact
+```
 
 ---
 
-# 5. Evidence
+# 5. Interpretation
 
-Evidence is information that supports, challenges, or informs a Claim.
+An Interpretation is an inferred meaning derived from one or more observations.
 
-Examples include:
+Example:
 
-* source code
-* tests
-* configuration
-* runtime behavior
-* build output
-* human statements
-* AI analysis
-* external documentation
-* commits
-* logs
-* measurements
-* tool output
+```text
+Observation:
+    src/auth/jwt.ts exists.
 
-Evidence does not automatically establish truth.
+Observation:
+    authentication middleware imports jwt.ts.
 
-Its relevance, authority, reliability, and relationship to a Claim must be represented.
+Interpretation:
+    JWT participates in authentication.
+```
+
+Interpretations must be traceable to their supporting observations.
 
 ---
 
-# 6. Source
+# 6. Proposition
 
-A Source identifies where an Assertion or Evidence item originated.
+A Proposition is semantic content that may be expressed by one or more Assertions.
 
-Potential Sources include:
+Example:
 
 ```text
-human
-AI participant
-source file
-test
-commit
-documentation
-external resource
-runtime observation
-tool
-system
+PROPOSITION-001
+
+subject:
+    production
+
+predicate:
+    uses_database
+
+object:
+    PostgreSQL
 ```
 
-A Source is not necessarily authoritative.
+Multiple Actors may independently assert the same Proposition.
 
-For example:
+---
+
+# 7. Assertion vs Proposition
+
+An Assertion represents an Actor's expression.
+
+A Proposition represents the semantic content of that expression.
+
+Therefore:
 
 ```text
-Source:
-AI participant
-
-Authority:
-low
-
-Role:
-proposal
+Proposition
+    ≠
+Assertion
 ```
 
-while:
+Example:
 
 ```text
-Source:
-human project owner
+PROPOSITION-001
+"The production database is PostgreSQL"
 
-Authority:
-high
+ASSERTION-001
+asserted_by: AI Agent A
+supports: PROPOSITION-001
 
-Role:
+ASSERTION-002
+asserted_by: Developer B
+supports: PROPOSITION-001
+```
+
+---
+
+# 8. Claim
+
+A Claim is a proposition that Continuum tracks as project knowledge.
+
+Conceptually:
+
+```text
+Claim
+├── subject
+├── predicate
+├── object
+├── scope
+├── temporal validity
+├── epistemic status
+├── provenance
+└── confidence
+```
+
+Claims should be semantically decomposable rather than stored only as natural-language strings.
+
+---
+
+# 9. Claim Identity
+
+Claims may express equivalent or near-equivalent propositions.
+
+Continuum should eventually support semantic normalization so that:
+
+```text
+"The app uses Postgres."
+
+"Production's database is PostgreSQL."
+
+"We use PostgreSQL in production."
+```
+
+can potentially be recognized as semantically related rather than treated as unrelated text.
+
+Semantic equivalence must not be based solely on string similarity.
+
+---
+
+# 10. Knowledge Lifecycle
+
+A conceptual knowledge lifecycle is:
+
+```text
+OBSERVED
+    ↓
+INTERPRETED
+    ↓
+PROPOSED
+    ↓
+ACCEPTED
+    ↓
+SUPPORTED
+    ↓
+VERIFIED
+```
+
+Alternative outcomes may include:
+
+```text
+REJECTED
+CONTRADICTED
+CONFLICTED
+SUPERSEDED
+```
+
+Not every Claim must pass through every state.
+
+---
+
+# 11. Epistemic States
+
+Potential epistemic states include:
+
+```text
+UNKNOWN
+ASSUMED
+HYPOTHESIZED
+OBSERVED
+INTERPRETED
+PROPOSED
+ACCEPTED
+SUPPORTED
+VERIFIED
+CONTRADICTED
+CONFLICTED
+REJECTED
+SUPERSEDED
+```
+
+Epistemic state describes the project's current understanding of knowledge.
+
+It does not by itself establish objective truth.
+
+---
+
+# 12. Semantic Relationships
+
+Continuum begins with the following conceptual relation vocabulary.
+
+### Identity
+
+```text
+same_as
+equivalent_to
+alias_of
+instance_of
+```
+
+### Logic
+
+```text
+implies
+entails
+contradicts
+compatible_with
+inconsistent_with
+```
+
+### Temporal
+
+```text
+precedes
+follows
+active_during
+supersedes
+superseded_by
+```
+
+### Causal
+
+```text
+causes
+caused_by
+contributes_to
+prevents
+```
+
+### Structural
+
+```text
+contains
+part_of
+depends_on
+composed_of
+implements
+implemented_by
+```
+
+### Knowledge
+
+```text
+derived_from
+supported_by
+contradicted_by
+evidenced_by
+explains
+justifies
+```
+
+### Decision
+
+```text
+proposes
+accepted_as
+rejected_as
+establishes
+invalidates
+```
+
+### Work
+
+```text
+addresses
+blocks
+blocked_by
+produces
+consumes
+tests
+verified_by
+```
+
+This vocabulary is provisional.
+
+---
+
+# 13. Relation Properties
+
+Relations may have semantic properties such as:
+
+```text
+directed
+symmetric
+transitive
+reflexive
+inverse
+```
+
+Examples:
+
+```text
+depends_on:
+    directed
+    non-symmetric
+
+equivalent_to:
+    potentially symmetric
+    potentially transitive
+
+part_of:
+    directed
+    potentially transitive
+
+contradicts:
+    potentially symmetric
+```
+
+Final relation algebra remains unspecified.
+
+---
+
+# 14. Entailment
+
+Entailment means one proposition logically or semantically implies another.
+
+Example:
+
+```text
+Claim A:
+The system uses PostgreSQL 16.
+
+Claim B:
+The system uses PostgreSQL.
+```
+
+Conceptually:
+
+```text
+A
+│
+└── entails → B
+```
+
+Entailment is directional.
+
+```text
+A → B
+```
+
+does not necessarily imply:
+
+```text
+B → A
+```
+
+---
+
+# 15. Equivalence
+
+Two propositions are equivalent when they represent the same semantic proposition under the relevant scope and temporal conditions.
+
+Example:
+
+```text
+A:
+Production uses PostgreSQL.
+
+B:
+The production database is PostgreSQL.
+```
+
+Potentially:
+
+```text
+A ↔ B
+```
+
+Equivalence must consider semantic meaning, scope, time, and object identity.
+
+---
+
+# 16. Contradiction
+
+Two Claims contradict when their semantic content cannot simultaneously hold under the same relevant conditions.
+
+Example:
+
+```text
+Claim A:
+Production uses PostgreSQL.
+
+Claim B:
+Production uses SQLite.
+```
+
+Potential contradiction:
+
+```text
+A
+↕
+contradicts
+↕
+B
+```
+
+Contradiction evaluation must consider:
+
+```text
+subject
+predicate
+object
+scope
+time
+version
+environment
+epistemic status
+```
+
+---
+
+# 17. Compatibility
+
+Claims may coexist without implying one another.
+
+Example:
+
+```text
+Frontend uses SolidJS.
+
+Backend uses Go.
+```
+
+These are potentially:
+
+```text
+compatible_with
+```
+
+rather than equivalent, entailing, or contradictory.
+
+---
+
+# 18. Dependency
+
+A Dependency expresses a condition in which one object relies upon another.
+
+Examples:
+
+```text
+Service → Library
+
+Feature → Requirement
+
+Test → Implementation
+
+Decision → Constraint
+
+Implementation → Decision
+```
+
+Dependencies may eventually be typed:
+
+```text
+runtime
+build
+development
+conceptual
+organizational
 decision
 ```
 
 ---
 
-# 7. Decision
+# 19. Derivation
 
-A Decision is an explicit determination accepted by an authorized participant.
-
-A Decision is not merely a Claim.
-
-A Decision represents an act of project authority.
+`derived_from` indicates that knowledge was inferred from one or more other objects.
 
 Example:
 
 ```text
-Decision:
-Use SQLite for local persistence.
-
-Authority:
-Project owner.
-
-Rationale:
-The application must remain local-first.
-
-Alternatives considered:
-PostgreSQL
-DuckDB
-IndexedDB
+Test passed
+    +
+Test covers Requirement R-001
+    ↓
+Requirement R-001 is verified
 ```
-
-A Decision may establish or modify one or more Claims.
 
 Conceptually:
 
 ```text
-Decision
-    │
-    └── establishes ──► Claim
+Claim
+    derived_from
+       ├── Observation A
+       └── Observation B
 ```
+
+Derivation should preserve provenance.
 
 ---
 
-# 8. Requirement
+# 20. Evidence
 
-A Requirement expresses something the project must satisfy.
+Evidence provides support for or against a Claim.
 
 Examples:
 
 ```text
-The application must run offline.
+Claim
+    supported_by
+Test Result
 
-The editor must support Markdown.
-
-The system must preserve project history.
+Claim
+    contradicted_by
+Observed Failure
 ```
 
-Requirements may be:
+Evidence is not identical to truth.
 
-* human-defined
-* derived from higher-level goals
-* imposed externally
-* contractual
-* technical
-* behavioral
-* operational
-* regulatory
-
-Requirements may establish Claims concerning intended project behavior.
+It is information that affects epistemic evaluation.
 
 ---
 
-# 9. Constraint
+# 21. Evidence Graph
 
-A Constraint restricts the set of acceptable project decisions or implementations.
-
-Examples:
+Example:
 
 ```text
-The application must operate on Linux.
-
-The system must remain usable with limited RAM.
-
-The implementation must not require a proprietary cloud service.
+CLAIM-001
+"API supports OIDC"
+      │
+      ├── supported_by → TEST-019
+      │
+      └── contradicted_by → BUG-022
 ```
 
-A Constraint differs from a Requirement:
+The resulting epistemic state may therefore be:
 
 ```text
-Requirement:
-    What must be achieved.
-
-Constraint:
-    What limits how it may be achieved.
-```
-
-A single project objective may therefore have many possible implementations while being subject to a fixed set of constraints.
-
----
-
-# 10. Proposal
-
-A Proposal represents a suggested project direction that has not acquired decision authority.
-
-Examples:
-
-```text
-Use SQLite.
-
-Introduce an event-sourced architecture.
-
-Add an MCP interface.
-
-Replace the existing parser.
-```
-
-A Proposal may be generated by:
-
-* human
-* AI
-* tool
-* analysis
-* external source
-
-A Proposal must not automatically become a Decision.
-
----
-
-# 11. Hypothesis
-
-A Hypothesis is a proposition used for investigation or reasoning whose validity has not yet been established.
-
-Examples:
-
-```text
-The persistence bug may be caused by transaction ordering.
-
-The context engine may be over-retrieving obsolete decisions.
-```
-
-Hypotheses differ from Proposals:
-
-```text
-Proposal:
-    A possible action.
-
-Hypothesis:
-    A possible explanation or proposition.
-```
-
----
-
-# 12. Assumption
-
-An Assumption is a proposition temporarily treated as true for the purpose of reasoning or action.
-
-An Assumption may later be:
-
-* confirmed
-* rejected
-* revised
-* invalidated
-* left unresolved
-
-Assumptions must remain distinguishable from verified project facts.
-
----
-
-# 13. Question
-
-A Question represents unresolved uncertainty requiring information, clarification, investigation, or decision.
-
-Examples:
-
-```text
-Should persistence remain SQLite?
-
-Why does the application fail during startup?
-
-Does the editor need collaborative editing?
-
-Which authentication protocol should be supported?
-```
-
-Questions may be associated with:
-
-* Claims
-* Decisions
-* Requirements
-* Work
-* Conflicts
-* Investigations
-
----
-
-# 14. Concept
-
-A Concept represents a meaningful entity or idea within the project's conceptual vocabulary.
-
-Examples:
-
-```text
-Document
-Workspace
-Project
-Tenant
-Agent
-Context
-Repository
-Artifact
-```
-
-Concepts may participate in relationships and may be referenced by Claims, Requirements, Decisions, Architecture, and Work.
-
----
-
-# 15. Epistemic Status
-
-Continuum must distinguish the nature of knowledge from its lifecycle.
-
-Initial epistemic states include:
-
-```text
-UNKNOWN
-OBSERVED
-DERIVED
-ASSUMED
-HYPOTHESIZED
-PROPOSED
-DECIDED
-VERIFIED
-CONTRADICTED
-REJECTED
-SUPERSEDED
 CONFLICTED
 ```
 
-These are provisional.
-
-The final taxonomy will be established after further analysis.
+rather than automatically true or false.
 
 ---
 
-# 16. Lifecycle Status
+# 22. Contextual Truth
 
-Lifecycle status describes the operational state of an entity.
+Claims must be evaluated within context.
 
-Potential lifecycle states include:
+Relevant contextual dimensions may include:
 
 ```text
-DRAFT
-ACTIVE
-IN_PROGRESS
-COMPLETED
-ABANDONED
-REJECTED
-SUPERSEDED
-ARCHIVED
+time
+scope
+environment
+version
+component
+tenant
+deployment
+configuration
 ```
-
-Epistemic status and lifecycle status are separate dimensions.
-
-For example:
-
-```text
-Proposal:
-    epistemic status = PROPOSED
-    lifecycle status = ACTIVE
-```
-
-A proposal can therefore remain an active proposal without being treated as accepted project truth.
-
----
-
-# 17. Temporal Validity
-
-Continuum must distinguish at least:
-
-```text
-created_at
-observed_at
-valid_from
-valid_until
-recorded_at
-superseded_at
-```
-
-Not every entity requires every timestamp.
-
-The final temporal model will be defined later.
-
-Historical information should not be destroyed merely because it is no longer current.
-
----
-
-# 18. Authority
-
-Authority describes the degree to which a participant or source is permitted to establish or modify project truth.
-
-Authority is distinct from:
-
-* confidence
-* evidence quality
-* technical correctness
-* source reliability
-
-For example, an AI may have extremely high technical confidence while still lacking authority to make an architectural decision.
-
----
-
-# 19. Confidence
-
-Confidence represents belief in the correctness of a Claim or inference.
-
-Confidence is distinct from authority.
-
-For example:
-
-```text
-AI analysis:
-    confidence = 0.95
-    authority = insufficient for architectural decision
-```
-
-This distinction is essential.
-
----
-
-# 20. Contradiction
-
-Two or more Claims, Assertions, Decisions, Requirements, or Evidence items may contradict one another.
-
-Contradiction must be explicitly representable.
 
 Example:
 
 ```text
-Decision D-001:
-    Use SQLite.
+Claim A:
+development database = SQLite
 
-Observed repository state:
-    PostgreSQL configuration is active.
+Claim B:
+production database = PostgreSQL
 ```
 
-Continuum should represent this as a conflict requiring reconciliation rather than silently selecting one interpretation.
+These Claims coexist because their scopes differ.
 
 ---
 
-# 21. Supersession
+# 23. Semantic Normalization
 
-A newer project decision or knowledge state may replace an older one without invalidating its historical existence.
+Continuum will eventually require semantic normalization capable of determining whether different representations refer to:
+
+```text
+the same proposition
+related propositions
+more specific propositions
+more general propositions
+contradictory propositions
+compatible propositions
+```
+
+This normalization must not rely solely on lexical similarity.
+
+---
+
+# 24. Specificity
+
+A proposition may be more specific than another.
 
 Example:
 
 ```text
-Decision D-001:
-    Use React.
+A:
+The application uses PostgreSQL 16.
 
-Decision D-042:
-    Use SolidJS.
-
-D-042 supersedes D-001.
+B:
+The application uses PostgreSQL.
 ```
 
-Historical records remain available.
-
-Current project state is determined through temporal validity and supersession relationships.
-
----
-
-# 22. Knowledge Graph
-
-The eventual Continuum model should represent project knowledge as a graph.
+A is more specific than B.
 
 Conceptually:
 
 ```text
-              ┌──────────────┐
-              │   Decision   │
-              └──────┬───────┘
-                     │ establishes
-                     ▼
-               ┌──────────┐
-               │  Claim   │
-               └────┬─────┘
-                    │ supported_by
-                    ▼
-               ┌──────────┐
-               │ Evidence │
-               └────┬─────┘
-                    │ produced_by
-                    ▼
-               ┌───────────┐
-               │ Participant│
-               └───────────┘
+A
+│
+└── entails → B
 ```
 
-Other relationships may include:
+This relationship should eventually support hierarchical knowledge retrieval.
+
+---
+
+# 25. Knowledge Graph
+
+Continuum's knowledge graph conceptually contains:
 
 ```text
-requires
-constrains
-supports
-contradicts
-supersedes
-depends_on
-implements
-satisfies
-derived_from
-evidenced_by
-proposed_by
-decided_by
-affects
-references
+                         PROJECT
+                            │
+          ┌─────────────────┼──────────────────┐
+          ▼                 ▼                  ▼
+       OBJECTS          PROPOSITIONS         EVENTS
+          │                 │                  │
+          │          ┌──────┴──────┐           │
+          │          ▼             ▼           │
+          │     ASSERTIONS      CLAIMS         │
+          │          │             │           │
+          └──────────┼─────────────┼───────────┘
+                     │             │
+                     └──────┬──────┘
+                            ▼
+                       RELATIONSHIPS
+                            │
+              ┌─────────────┼─────────────┐
+              ▼             ▼             ▼
+           EVIDENCE      SOURCES       CONTEXT
 ```
 
-The final relationship vocabulary remains to be designed.
+The graph is semantic, not necessarily a graph database implementation.
 
 ---
 
-# 23. Critical Distinction
+# 26. Knowledge Graph Requirements
 
-Continuum must preserve the difference between:
+The knowledge graph must eventually support:
+
+* identity resolution
+* semantic equivalence
+* entailment
+* contradiction detection
+* compatibility detection
+* dependency traversal
+* provenance traversal
+* evidence traversal
+* temporal filtering
+* scope filtering
+* authority filtering
+* epistemic-state filtering
+
+---
+
+# 27. Reasoning Without Hidden Chain-of-Thought
+
+Continuum should support explainable reasoning without depending on private AI reasoning traces.
+
+It should preserve:
 
 ```text
-WHAT IS SAID
-WHAT IS OBSERVED
-WHAT IS BELIEVED
-WHAT IS PROPOSED
-WHAT IS DECIDED
-WHAT IS IMPLEMENTED
-WHAT IS VERIFIED
+inputs
+observations
+claims
+evidence
+relations
+rules
+outputs
+actions
 ```
 
-These are not interchangeable.
+rather than requiring hidden model chain-of-thought.
 
-This distinction is one of the primary mechanisms by which Continuum will prevent AI context from becoming an undifferentiated collection of potentially stale statements.
+This allows Continuum to answer:
+
+> Why does the system currently believe this?
+
+through explicit project evidence and relationships.
 
 ---
 
-# 24. Knowledge Flow
+# 28. AI as a Knowledge Participant
 
-A typical knowledge lifecycle may resemble:
+AI is treated as a participant in the knowledge system.
+
+AI may:
 
 ```text
-Observation
-    │
-    ▼
-Assertion
-    │
-    ▼
-Claim
-    │
-    ├──► Investigation
-    │
-    ├──► Evidence
-    │
-    └──► Decision
-              │
-              ▼
-            Claim
-              │
-              ▼
-        Implementation
-              │
-              ▼
-           Evidence
-              │
-              ▼
-          Verification
+observe
+interpret
+assert
+propose
+infer
+summarize
+retrieve
+recommend
+execute
 ```
 
-This is a conceptual flow, not yet an implementation requirement.
+AI does not automatically gain authority by performing these actions.
+
+Authority remains an independent property.
 
 ---
 
-# 25. Design Constraint
+# 29. Knowledge Integrity
 
-The knowledge model must remain independent of:
+Continuum should avoid silently collapsing distinct semantic states.
 
-* database technology
-* serialization format
-* programming language
-* AI provider
-* model architecture
-* user interface
-* CLI
-* API transport
+In particular:
 
-Those are implementation concerns.
+```text
+Assertion ≠ Claim
+Claim ≠ Truth
+Evidence ≠ Truth
+Observation ≠ Interpretation
+Proposal ≠ Decision
+Confidence ≠ Authority
+Similarity ≠ Equivalence
+Contradiction ≠ Difference
+Current State ≠ Historical Record
+```
 
-The ontology and knowledge model define meaning.
+These distinctions are foundational.
 
 ---
 
-# 26. Open Questions
+# 30. Open Questions
 
 The following remain unresolved:
 
-1. Is Claim the correct fundamental primitive?
-2. Is Assertion necessary as a distinct entity?
-3. Should Requirement and Constraint be specialized Claims?
-4. Should Decision be an entity or an event?
-5. Should Evidence be an entity or relationship?
-6. How should authority be represented?
-7. How should confidence be represented?
-8. How should temporal validity be represented?
-9. How should conflicting Claims be reconciled?
-10. How should Claims be merged or deduplicated?
-11. How should derived Claims be distinguished from observed Claims?
-12. How should AI-generated knowledge be represented?
-13. How should external sources be trusted?
-14. What constitutes sufficient evidence for verification?
-15. Which entities require independent identity?
-16. Which entities should be immutable?
-17. Which entities may be edited?
-18. How should historical states be reconstructed?
+1. Proposition identity algorithm
+2. Semantic normalization
+3. Claim deduplication
+4. Equivalence detection
+5. Entailment engine
+6. Contradiction detection
+7. Compatibility detection
+8. Relation ontology governance
+9. Relation algebra
+10. Ontology extension mechanism
+11. Predicate vocabulary
+12. Object/property semantics
+13. Knowledge state transitions
+14. Evidence weighting
+15. Source reliability
+16. Confidence calculation
+17. Scope inheritance
+18. Temporal reasoning
+19. Semantic versioning
+20. AI-assisted semantic classification
 
-These questions must be resolved before the persistence schema is finalized.
+---
+
+# 31. Design Rule
+
+Continuum must preserve the distinction between what was observed, what was said, what was inferred, what was believed, what was decided, and what was verified.
+
+Semantic relationships must be explicit enough that an AI can reconstruct not merely project information, but the project's evolving understanding of that information.
