@@ -1,250 +1,321 @@
 # Continuum Ontology
 
-**Status:** Initial Draft
-**Version:** 0.1.0
+**Status:** Draft
+**Version:** 0.2.0
 **Date:** 2026-07-29
 
 ---
 
 ## 1. Purpose
 
-This document establishes the initial conceptual ontology of Continuum.
+This document defines the conceptual ontology of Continuum.
 
-The ontology identifies the kinds of things Continuum must be able to represent.
+The ontology establishes what kinds of things Continuum must be capable of representing independently of:
 
-It is intentionally incomplete.
+* programming language
+* storage technology
+* serialization format
+* AI provider
+* user interface
+* CLI
+* API
 
-The purpose of this version is to establish the conceptual boundary of the system before schemas, APIs, storage models, and implementation are designed.
+This document defines meaning, not implementation.
 
 ---
 
-## 2. Ontological Principle
+# 2. Foundational Model
 
-Continuum represents a software project as a network of persistent entities and relationships rather than as a collection of independent documents.
-
-The central model is:
+Continuum represents a project as a persistent graph of:
 
 ```text
-Project
-  │
-  ├── Intent
-  ├── Goals
-  ├── Requirements
-  ├── Constraints
-  ├── Decisions
-  ├── Assumptions
-  ├── Questions
-  ├── Proposals
-  ├── Hypotheses
-  ├── Concepts
-  ├── Architecture
-  ├── Artifacts
-  ├── Work
-  ├── State
-  ├── Evidence
-  ├── Events
-  └── Relationships
+Entities
+Claims
+Events
+Relations
+Evidence
+Sources
 ```
 
-These entities are connected through explicit relationships.
+These primitives interact to form a model of project understanding and project history.
+
+Conceptually:
+
+```text
+                    PROJECT
+                       │
+         ┌─────────────┼─────────────┐
+         ▼             ▼             ▼
+      ENTITIES       CLAIMS        EVENTS
+         │             │             │
+         └─────────────┼─────────────┘
+                       │
+                       ▼
+                  RELATIONS
+                       │
+                       ▼
+                    EVIDENCE
+                       │
+                       ▼
+                    SOURCES
+```
+
+The project graph is a conceptual model.
+
+It does not prescribe a graph database.
 
 ---
 
-## 3. Initial Entity Classes
+# 3. Ontological Primitives
 
-### 3.1 Project
+Continuum initially recognizes four primary conceptual primitives:
 
-The persistent software project whose understanding Continuum maintains.
+1. Entity
+2. Claim
+3. Event
+4. Relation
 
-A Project is the root scope for project memory.
-
----
-
-### 3.2 Participant
-
-A human, AI agent, tool, service, or external system interacting with the project.
+Evidence and Source provide provenance and support for the graph.
 
 ---
 
-### 3.3 Session
+# 4. Entity
 
-A bounded interaction involving one or more Participants and a Project.
-
----
-
-### 3.4 Intent
-
-The fundamental purpose or desired outcome underlying a project or project activity.
-
----
-
-### 3.5 Goal
-
-A desired outcome pursued by the project.
-
-Goals may be strategic, product-oriented, technical, operational, or local to a particular work effort.
-
----
-
-### 3.6 Requirement
-
-A condition, capability, behavior, or property that the project is expected or required to satisfy.
-
----
-
-### 3.7 Constraint
-
-A limitation or boundary that restricts acceptable project decisions or implementations.
-
----
-
-### 3.8 Decision
-
-An explicitly accepted determination regarding the project.
-
-A Decision must eventually support:
-
-* rationale
-* authority
-* evidence
-* alternatives
-* consequences
-* temporal validity
-* supersession
-
----
-
-### 3.9 Proposal
-
-A suggested course of action or possible project state that has not yet acquired decision authority.
-
----
-
-### 3.10 Hypothesis
-
-A proposition that may be useful for reasoning but has not yet been sufficiently established as project truth.
-
----
-
-### 3.11 Assumption
-
-A proposition temporarily treated as true for the purpose of reasoning or action.
-
-Assumptions must remain distinguishable from verified facts.
-
----
-
-### 3.12 Question
-
-An unresolved request for information, clarification, judgment, or decision.
-
----
-
-### 3.13 Concept
-
-A meaningful domain, technical, architectural, or project-specific concept recognized by the project.
-
----
-
-### 3.14 Architecture
-
-The structural organization of the software system and the relationships between its significant parts.
-
-Architecture may include:
-
-* components
-* boundaries
-* interfaces
-* dependencies
-* patterns
-* deployment structures
-* data flows
-* architectural decisions
-
----
-
-### 3.15 Artifact
-
-A persistent or observable project object.
+An Entity represents a thing that the project recognizes as existing or being relevant.
 
 Examples include:
 
-* source files
-* tests
-* configuration
-* specifications
-* schemas
-* diagrams
-* documentation
-* generated files
-* commits
-* external resources
+* Project
+* Participant
+* Artifact
+* Component
+* Interface
+* Service
+* Database
+* Domain Concept
+* Repository
+* Environment
+
+Entities have persistent identity.
+
+Their representation may change without changing their identity.
 
 ---
 
-### 3.16 Work
+# 5. Claim
 
-A bounded effort undertaken to change, investigate, verify, or otherwise advance the project.
+A Claim is a persistent proposition asserting that some relationship, property, state, requirement, possibility, or interpretation holds within a specified scope and temporal context.
 
-Work may include tasks, work packets, investigations, implementation efforts, refactoring, migrations, or other activities.
+Examples:
 
----
+```text
+The application uses SQLite.
 
-### 3.17 State
+The application must operate offline.
 
-A representation of what is currently believed to be true about some project entity, subsystem, artifact, or the project as a whole.
+SQLite is preferred for local persistence.
 
-State is temporal and may change.
+The persistence bug may be caused by transaction ordering.
+```
 
----
+Claims do not inherently possess equal authority or truth.
 
-### 3.18 Evidence
-
-An observable source supporting or challenging a claim about the project.
-
-Evidence may originate from:
-
-* source code
-* tests
-* configuration
-* execution
-* human statements
-* external documentation
-* commits
-* tool output
-* other project artifacts
+Their status must be established through evidence, reasoning, observation, or explicit project decisions.
 
 ---
 
-### 3.19 Event
+# 6. Claim Structure
 
-A record that something happened.
+A Claim conceptually consists of:
 
-Examples include:
+```text
+Claim
+├── subject
+├── predicate
+├── object/value
+├── scope
+├── epistemic status
+├── temporal validity
+├── provenance
+└── relationships
+```
 
-* decision accepted
-* requirement changed
-* artifact modified
-* test executed
-* conflict detected
-* work started
-* work completed
-* context generated
+The final representation is not yet specified.
 
-Events provide historical continuity.
+The subject, predicate, and object/value model is conceptual and may later be expanded to support richer propositions.
 
 ---
 
-### 3.20 Relationship
+# 7. Specialized Claim Types
 
-An explicit connection between entities.
+Several previously proposed entities are now understood as specialized forms of Claim.
 
-Examples include:
+### Requirement
+
+A Claim expressing a condition the project is expected or obligated to satisfy.
+
+Example:
+
+```text
+The application must support offline operation.
+```
+
+### Constraint
+
+A Claim expressing a limitation on acceptable project choices or implementations.
+
+Example:
+
+```text
+The application must not require a proprietary cloud service.
+```
+
+### Proposal
+
+A Claim representing a suggested project direction that has not acquired decision authority.
+
+Example:
+
+```text
+Use SQLite for local persistence.
+```
+
+### Hypothesis
+
+A Claim representing a proposition used for investigation or reasoning whose validity has not been established.
+
+Example:
+
+```text
+The startup failure may be caused by configuration ordering.
+```
+
+### Assumption
+
+A Claim temporarily treated as true for the purpose of reasoning or action.
+
+Example:
+
+```text
+Assume the database schema is backward compatible.
+```
+
+### Observation
+
+A Claim derived directly from an observation of project or external state.
+
+Example:
+
+```text
+The repository currently contains a SQLite adapter.
+```
+
+These distinctions are semantic classifications, not necessarily implementation inheritance relationships.
+
+---
+
+# 8. Decision
+
+A Decision is not merely a Claim.
+
+A Decision is an authoritative Event in which an authorized participant establishes or changes project direction.
+
+Example:
+
+```text
+Decision:
+Use SQLite for local persistence.
+
+Authority:
+Project owner.
+
+Rationale:
+The application is local-first.
+```
+
+A Decision may establish one or more Claims.
+
+Conceptually:
+
+```text
+Decision Event
+      │
+      └── establishes ──► Claim
+```
+
+This distinction preserves the difference between:
+
+```text
+What is true?
+What should be true?
+What has the project decided to do?
+```
+
+---
+
+# 9. Event
+
+An Event represents something that happened within the project or within the project's development process.
+
+Examples:
+
+* Decision accepted
+* Requirement changed
+* Artifact modified
+* Work started
+* Work completed
+* Test executed
+* Claim verified
+* Claim refuted
+* Conflict detected
+* Context generated
+* Participant joined
+* Project state changed
+
+Events provide temporal continuity.
+
+An Event may create, modify, establish, invalidate, or relate to other project objects.
+
+---
+
+# 10. Event vs State
+
+An Event describes:
+
+> **Something that happened.**
+
+State describes:
+
+> **What is currently believed to be true.**
+
+Example:
+
+```text
+Event:
+Decision D-001 was accepted on July 29.
+
+State:
+SQLite is the accepted persistence technology.
+```
+
+Events provide history.
+
+State provides current understanding.
+
+They must not be conflated.
+
+---
+
+# 11. Relation
+
+A Relation explicitly connects two or more objects.
+
+Potential relations include:
 
 ```text
 implements
 depends_on
-satisfies
+requires
 constrains
 supports
 contradicts
@@ -254,64 +325,160 @@ evidenced_by
 proposed_by
 decided_by
 affects
-contains
 references
+contains
+part_of
+verifies
+invalidates
 ```
 
-The relationship model will be formally designed later.
+The final relation vocabulary and cardinality rules remain to be defined.
+
+Relations are first-class conceptual objects even if the eventual storage representation uses edges, references, or other mechanisms.
 
 ---
 
-### 3.21 Conflict
+# 12. Evidence
 
-An explicit representation of incompatible claims, states, decisions, requirements, evidence, or other project knowledge.
+Evidence is information supporting, challenging, or informing a Claim.
 
-A Conflict must not be silently resolved merely by choosing the most convenient interpretation.
+Examples:
+
+* source code
+* tests
+* configuration
+* runtime behavior
+* logs
+* build output
+* human statements
+* AI analysis
+* external documentation
+* commits
+* measurements
+* tool output
+
+Evidence is not automatically truth.
+
+Evidence must be interpreted in relation to Claims, Sources, authority, reliability, and temporal context.
 
 ---
 
-### 3.22 Context
+# 13. Source
 
-A generated, task-specific representation of relevant project knowledge assembled for a participant or operation.
+A Source identifies the origin of an Assertion or Evidence item.
 
-Context is derived from persistent project memory and evidence.
-
-Context is not itself the authoritative source of project truth.
-
----
-
-## 4. Initial Epistemic States
-
-Project knowledge may eventually require explicit epistemic classification.
-
-Initial candidates:
+Potential sources include:
 
 ```text
+Human participant
+AI participant
+Source file
+Test
+Commit
+Documentation
+External resource
+Runtime observation
+Tool
+System
+```
+
+Source identity and source authority are distinct concepts.
+
+For example, an AI-generated statement may have high technical confidence while lacking authority to establish an architectural decision.
+
+---
+
+# 14. Assertion
+
+An Assertion represents a particular statement, observation, or expression concerning a Claim.
+
+The distinction is:
+
+```text
+Claim:
+    The project uses SQLite.
+
+Assertion:
+    src/database/sqlite.ts imports the SQLite adapter,
+    observed on 2026-07-29.
+```
+
+A Claim represents the proposition.
+
+An Assertion represents a specific expression or observation concerning that proposition.
+
+Assertions allow Continuum to preserve multiple observations or statements concerning the same Claim without collapsing them into a single undifferentiated record.
+
+---
+
+# 15. Knowledge vs Decision
+
+Continuum explicitly distinguishes:
+
+### Fact / State Claim
+
+A proposition about what is believed to be true.
+
+```text
+The application currently uses SQLite.
+```
+
+### Requirement
+
+A proposition about what the project must satisfy.
+
+```text
+The application must operate offline.
+```
+
+### Decision
+
+An authoritative project action establishing a chosen direction.
+
+```text
+The project will use SQLite for local persistence.
+```
+
+These may concern the same subject but have different semantics.
+
+---
+
+# 16. Epistemic Status
+
+Epistemic status describes the project's current understanding of a Claim.
+
+Initial candidates include:
+
+```text
+UNKNOWN
 OBSERVED
 DERIVED
-PROPOSED
 ASSUMED
-DECIDED
+HYPOTHESIZED
+PROPOSED
+ACCEPTED
+VERIFIED
+CONTRADICTED
 REJECTED
 SUPERSEDED
-UNKNOWN
 CONFLICTED
 ```
 
-These classifications are provisional until the formal knowledge model is designed.
+These states remain provisional.
+
+The final epistemic model will distinguish belief, evidence, acceptance, verification, and authority more precisely.
 
 ---
 
-## 5. Initial Lifecycle States
+# 17. Lifecycle Status
 
-Entities may also require lifecycle states distinct from epistemic states.
+Lifecycle status describes the operational lifecycle of an object.
 
-Potential lifecycle concepts include:
+Potential values include:
 
 ```text
 DRAFT
 ACTIVE
-ACCEPTED
 IN_PROGRESS
 COMPLETED
 ABANDONED
@@ -320,94 +487,340 @@ SUPERSEDED
 ARCHIVED
 ```
 
-Epistemic state and lifecycle state must not be conflated.
+Epistemic status and lifecycle status are separate dimensions.
 
 For example:
 
 ```text
-A proposal may be:
-  epistemic state: PROPOSED
-  lifecycle state: ACTIVE
+Proposal:
+    epistemic status = PROPOSED
+    lifecycle status = ACTIVE
 ```
 
 ---
 
-## 6. Initial Temporal Model
+# 18. Authority
 
-Continuum must support the distinction between:
+Authority describes the degree to which a Participant or Source is authorized to establish or modify project truth or direction.
 
-* when something was created
-* when something became valid
-* when something stopped being valid
-* when something was observed
-* when something was recorded
-* when something was superseded
+Authority is distinct from:
 
-The final temporal model is not yet defined.
+* confidence
+* evidence quality
+* source reliability
+* technical expertise
+* correctness
+
+An AI may have high confidence while lacking authority to establish an architectural Decision.
 
 ---
 
-## 7. Initial Provenance Model
+# 19. Confidence
 
-Project knowledge must eventually support provenance sufficient to answer:
+Confidence represents belief in the correctness of a Claim, inference, interpretation, or conclusion.
+
+Confidence is distinct from Authority.
+
+Example:
 
 ```text
-Who or what produced this?
-When?
-From what source?
-By what process?
-Under what authority?
-Based upon what evidence?
+AI analysis:
+    confidence = high
+    authority = insufficient for architectural decision
 ```
 
-The exact provenance model remains to be specified.
+The final confidence model may be qualitative, quantitative, probabilistic, or hybrid.
 
 ---
 
-## 8. Ontology Design Rule
+# 20. Temporal Model
 
-The ontology must remain independent from:
+Continuum must preserve the temporal dimensions of project knowledge.
 
-* programming language
-* serialization format
+Potential timestamps include:
+
+```text
+created_at
+observed_at
+recorded_at
+valid_from
+valid_until
+superseded_at
+```
+
+These represent different concepts and must not be collapsed into one timestamp.
+
+Historical project knowledge should remain recoverable.
+
+---
+
+# 21. Identity
+
+Every persistent object must eventually possess a stable identity independent of its representation.
+
+For example:
+
+```text
+Requirement R-001
+```
+
+may move between files, change wording, or change representation while retaining its identity.
+
+Therefore:
+
+```text
+Object identity
+    ≠
+File path
+    ≠
+Document title
+    ≠
+Representation
+```
+
+The final identifier scheme remains undefined.
+
+---
+
+# 22. Identity vs Version
+
+Object identity must be distinguished from object version.
+
+For example:
+
+```text
+Requirement R-001
+    ├── version 1
+    ├── version 2
+    ├── version 3
+    └── current
+```
+
+Changing the representation or content of an object does not necessarily create a new identity.
+
+However, some changes may instead constitute a new object that supersedes the previous one.
+
+The rules governing this distinction remain to be defined.
+
+---
+
+# 23. Supersession
+
+Supersession represents the replacement of one project object or understanding by another while preserving historical existence.
+
+Example:
+
+```text
+Decision D-001:
+    Use React.
+
+Decision D-042:
+    Use SolidJS.
+
+D-042 supersedes D-001.
+```
+
+D-001 remains historically valid as a past decision.
+
+Current project understanding is determined through temporal validity and supersession.
+
+---
+
+# 24. Contradiction
+
+Continuum must explicitly represent contradictory Claims, Evidence, Decisions, Requirements, or States.
+
+Example:
+
+```text
+Decision D-001:
+    Use SQLite.
+
+Observed repository state:
+    PostgreSQL configuration is active.
+```
+
+This should result in an explicit conflict representation.
+
+Continuum must not silently select whichever interpretation is easiest for an AI participant.
+
+---
+
+# 25. Project Graph
+
+The conceptual project graph may be represented as:
+
+```text
+                       PROJECT
+                          │
+              ┌───────────┼───────────┐
+              ▼           ▼           ▼
+           ENTITIES     CLAIMS       EVENTS
+              │           │           │
+              └───────────┼───────────┘
+                          │
+                       RELATIONS
+                          │
+                          ▼
+                       EVIDENCE
+                          │
+                          ▼
+                        SOURCES
+```
+
+A more detailed example:
+
+```text
+Decision D-001
+      │
+      │ establishes
+      ▼
+Claim C-001
+"The project uses SQLite."
+      ▲
+      │ supported_by
+      │
+Evidence E-001
+      │
+      │ observed_in
+      ▼
+Artifact A-001
+src/database/sqlite.ts
+```
+
+The graph allows Continuum to answer not only:
+
+> What does the project believe?
+
+but also:
+
+> Why does it believe this?
+
+and:
+
+> Who or what established it?
+
+and:
+
+> What evidence supports it?
+
+and:
+
+> What contradicts it?
+
+---
+
+# 26. Knowledge Flow
+
+A conceptual knowledge lifecycle may resemble:
+
+```text
+Observation
+    │
+    ▼
+Assertion
+    │
+    ▼
+Claim
+    │
+    ├──► Investigation
+    │
+    ├──► Evidence
+    │
+    └──► Decision
+              │
+              ▼
+          Accepted Claim
+              │
+              ▼
+        Implementation
+              │
+              ▼
+            Evidence
+              │
+              ▼
+          Verification
+              │
+              ▼
+       Updated Project State
+```
+
+This is a conceptual model, not yet an implementation requirement.
+
+---
+
+# 27. What We Have Established
+
+The current conceptual model distinguishes:
+
+```text
+Entity
+    Something the project recognizes as existing.
+
+Claim
+    A proposition about the project.
+
+Event
+    Something that happened.
+
+Relation
+    A connection between project objects.
+
+Evidence
+    Information supporting or challenging a proposition.
+
+Source
+    The origin of evidence or assertions.
+
+Decision
+    An authoritative event establishing project direction.
+
+State
+    Current project understanding derived from the graph.
+```
+
+---
+
+# 28. Open Ontological Questions
+
+The following remain unresolved:
+
+1. Is Claim sufficiently expressive as a primitive?
+2. Should Assertion remain distinct from Evidence?
+3. Should Requirement and Constraint be specialized Claims?
+4. Should Decision be represented exclusively as an Event?
+5. Should State be a first-class object or a derived view?
+6. Should Evidence be an Entity, a Relation, or both?
+7. How should authority be modeled?
+8. How should confidence be modeled?
+9. How should temporal validity be modeled?
+10. How should Claims be merged?
+11. How should equivalent Claims be identified?
+12. How should contradictions be represented?
+13. How should AI-generated Claims differ from human Claims?
+14. What makes a Claim "verified"?
+15. Which changes require human authorization?
+16. Which objects must be immutable?
+17. Which objects may be revised?
+18. How should historical state be reconstructed?
+
+These questions must be resolved before implementation schemas are finalized.
+
+---
+
+# 29. Ontology Design Rule
+
+The ontology defines the semantic world of Continuum.
+
+It must remain independent of:
+
 * database technology
+* file format
+* programming language
 * AI provider
-* CLI implementation
-* UI implementation
+* model architecture
+* API
+* CLI
+* UI
 
-Those are implementation concerns.
-
-The ontology defines what Continuum means, not how it stores or displays it.
-
----
-
-## 9. Deliberate Unknowns
-
-The following are intentionally unresolved:
-
-* exact entity identifiers
-* exact schemas
-* entity inheritance
-* relationship cardinality
-* temporal representation
-* provenance representation
-* authority model
-* versioning model
-* event model
-* storage format
-* query language
-* context ranking
-* context assembly algorithm
-* AI protocol
-* CLI design
-* API design
-
-These will be resolved through subsequent specifications and architectural decisions.
-
----
-
-## 10. Next Ontological Task
-
-The next task is to determine whether the initial entity classes represent genuinely distinct concepts or whether some should be unified, split, or reclassified.
-
-No implementation schema should be created until this analysis is complete.
+Implementation mechanisms must conform to the ontology rather than redefining it implicitly.
